@@ -12,7 +12,7 @@ module.exports = defineConfig({
       mochaFile: 'cypress/results/results-[hash].xml',
       toConsole: false,
     },
-    specPattern: 'tests/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: 'test/**/*.cy.{js,jsx,ts,tsx}',
   },
   viewportWidth: 1280,
   viewportHeight: 720
