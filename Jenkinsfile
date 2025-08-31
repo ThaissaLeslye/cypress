@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+        stage('Limpeza e Preparação') { // 1. UM ESTÁGIO DEDICADO PARA LIMPEZA
+            steps {
+                echo 'Limpando o workspace antes de começar...'
+                
+                // O COMANDO MÁGICO PARA LIMPAR TUDO:
+                cleanWs() 
+            }
+        }
         stage('Checkout') {
             steps {
                 // Clona o repositório do Git
