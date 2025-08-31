@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="20.639" tests="9" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-08-31T16:24:45" tests="9" file="test\firstTest.cy.js" time="20.638" failures="0">
+    <testcase name="Hello world 1" time="3.321" classname="Hello world 1">
+    </testcase>
+    <testcase name="Cypress Locator Methods" time="0.975" classname="Cypress Locator Methods">
+    </testcase>
+    <testcase name="Child Elements" time="0.758" classname="Child Elements">
+    </testcase>
+    <testcase name="Parent Elements" time="0.738" classname="Parent Elements">
+    </testcase>
+    <testcase name="Cypress Chains" time="0.866" classname="Cypress Chains">
+    </testcase>
+    <testcase name="Reusing Locators" time="0.896" classname="Reusing Locators">
+    </testcase>
+    <testcase name="Extracting Values" time="1.040" classname="Extracting Values">
+    </testcase>
+    <testcase name="Assertions" time="0.677" classname="Assertions">
+    </testcase>
+    <testcase name="Timeouts" time="11.141" classname="Timeouts">
+    </testcase>
+  </testsuite>
+</testsuites>

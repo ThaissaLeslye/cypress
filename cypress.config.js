@@ -5,13 +5,16 @@ module.exports = defineConfig({
     experimentalRunAllSpecs: true,
     baseUrl: 'https://playground.bondaracademy.com/',
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      require('cypress-mochawesome-reporter/plugin')(on);
     },
-    reporter: 'junit',
-    reporterOptions: {
-      mochaFile: 'cypress/results/results-[hash].xml',
-      toConsole: false,
-    },
+  reporter: 'cypress-mochawesome-reporter', // <---- MUDE AQUI
+  reporterOptions: {
+    charts: true,
+    reportPageTitle: 'Relatório dos Testes Cypress',
+    embeddedScreenshots: true,
+    inlineAssets: true,
+    saveAllAttempts: false,
+  },
     specPattern: 'test/**/*.cy.{js,jsx,ts,tsx}',
   },
   viewportWidth: 1280,

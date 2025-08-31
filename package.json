@@ -1,12 +1,10 @@
 {
   "name": "cypress-playground",
   "scripts": {
-    "test": "mocha"
+    "test": "cypress run"
   },
   "devDependencies": {
-    "chai": "^6.0.1",
     "cypress": "^14.5.4",
-    "mocha": "^11.7.1",
-    "mocha-junit-reporter": "^2.2.1"
+    "cypress-mochawesome-reporter": "^4.0.2"
   }
 }
