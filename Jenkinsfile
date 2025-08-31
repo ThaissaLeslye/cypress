@@ -34,15 +34,6 @@ pipeline {
                 sh 'npm test'
             }
         }
-
-        stage('Build') {
-            steps {
-                // Exemplo de um comando de build (ajuste conforme seu projeto)
-                sh 'npm run build'
-            }
-        }
-
-        // Adicione estágios adicionais para deploy, etc.
     }
 
     post {
