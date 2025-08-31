@@ -13,11 +13,7 @@ pipeline {
 
     post {
         always {
-            stage('Publish Test Results') {
-                steps {
-                    junit 'cypress/results/*.xml'
-                }
-            }
+            junit 'cypress/results/*.xml'
         }
     }
 }
