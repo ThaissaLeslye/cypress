@@ -38,9 +38,8 @@ pipeline {
 
     post {
         always {
-            // Ações a serem executadas sempre ao final da pipeline,
-            // independentemente do resultado (sucesso, falha, etc.)
-            echo 'Pipeline finalizada.'
+            // arquiva os relatórios como artefato
+            archiveArtifacts artifacts: 'mochawesome-report/*.html', allowEmptyArchive: true
         }
     }
 }
