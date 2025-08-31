@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        dockerfile true
+        dockerfile {
+            dir '.'
+            label 'docker'
+        }
     }
     tools {
         nodejs 'NodeJS' 
