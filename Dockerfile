@@ -1,21 +1,18 @@
-# Use uma imagem Node.js oficial como base
-FROM node:18-slim
+# Use an official Node.js image.
+# Using a specific version is recommended for consistency.
+FROM node:20-alpine
 
-# Instale as dependências do sistema operacional que o Cypress precisa
-RUN apt-get update && apt-get install -y \
-  libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 \
-  xvfb \
-  --no-install-recommends \
-  && rm -rf /var/lib/apt/lists/*
-
-# Defina o diretório de trabalho
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copie os arquivos de configuração e de dependências do seu projeto
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Instale as dependências
+# Install project dependencies (including Cypress)
 RUN npm install
 
-# Copie o resto dos arquivos do seu projeto
+# Copy the rest of your application code
 COPY . .
+
+# The CMD is not strictly needed for Jenkins, but good practice
+CMD ["npx", "cypress", "run"]
