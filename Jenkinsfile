@@ -13,9 +13,10 @@ pipeline {
 
     post {
         always {
-            // Garante que junit rode dentro do workspace
-            node {
-                junit 'cypress/results/*.xml'
+            stage('Publish Test Results') {
+                steps {
+                    junit 'cypress/results/*.xml'
+                }
             }
         }
     }
