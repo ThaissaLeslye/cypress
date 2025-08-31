@@ -1,21 +1,47 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS' // O mesmo nome configurado na "Global Tool Configuration"
+    }
+
     stages {
-        stage('Run Cypress') {
+        stage('Checkout') {
             steps {
-                script {
-                    docker.image('cypress/included:12.17.3').inside {
-                        sh 'npx cypress run --reporter junit --reporter-options "mochaFile=cypress/results/results-[hash].xml,toConsole=true"'
-                    }
-                }
+                // Clona o repositório do Git
+                checkout scm
             }
         }
+
+        stage('Install Dependencies') {
+            steps {
+                // Executa o npm install para baixar as dependências do projeto
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Executa os testes definidos no seu package.json
+                sh 'npm test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Exemplo de um comando de build (ajuste conforme seu projeto)
+                sh 'npm run build'
+            }
+        }
+
+        // Adicione estágios adicionais para deploy, etc.
     }
 
     post {
         always {
-            junit 'cypress/results/*.xml'
+            // Ações a serem executadas sempre ao final da pipeline,
+            // independentemente do resultado (sucesso, falha, etc.)
+            echo 'Pipeline finalizada.'
         }
     }
 }
