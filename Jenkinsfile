@@ -40,6 +40,16 @@ pipeline {
         always {
             // arquiva os relatórios como artefato
             archiveArtifacts artifacts: 'mochawesome-report/*.html', allowEmptyArchive: true
+
+            // Publica o relatório HTML com botão na interface
+            publishHTML([
+                reportDir: 'mochawesome-report',
+                reportFiles: 'mochawesome.html',
+                reportName: 'Relatório Cypress',
+                keepAll: true,
+                alwaysLinkToLastBuild: true,
+                allowMissing: true
+            ])
         }
     }
 }
