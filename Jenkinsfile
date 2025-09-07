@@ -38,18 +38,11 @@ pipeline {
 
     post {
         always {
-            // arquiva os relatórios como artefato
-            archiveArtifacts artifacts: 'mochawesome-report/*.html', allowEmptyArchive: true
-
-            // Publica o relatório HTML com botão na interface
-            publishHTML([
-                reportDir: 'mochawesome-report',
-                reportFiles: 'mochawesome.html',
-                reportName: 'Relatório Cypress',
-                keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
-            ])
+            // Este bloco é executado sempre, independentemente do resultado do build
+            echo 'Archiving reports...'
+            archiveArtifacts artifacts: 'cypress/reports/*.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'cypress/reports/*.json', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'test_summary.csv', allowEmptyArchive: true
         }
     }
 }

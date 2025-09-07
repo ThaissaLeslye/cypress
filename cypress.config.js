@@ -7,12 +7,15 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
     },
-  reporter: 'mochawesome',
+  reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
-    reportDir: 'mochawesome-report',
-    overwrite: false,
-    html: true,
-    json: true
+    charts: true,
+    reportPageTitle: 'Relatório de Testes Cypress',
+    embeddedScreenshots: true,
+    inlineAssets: true,
+    saveAllAttempts: false,
+    // Garante que um ficheiro JSON é gerado
+    json: true,
   },
     specPattern: 'test/**/*.cy.{js,jsx,ts,tsx}',
   },
