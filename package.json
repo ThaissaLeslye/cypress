@@ -1,7 +1,7 @@
 {
   "name": "cypress-playground",
   "scripts": {
-    "test": "cypress run --reporter mochawesome"
+    "test": "TERM=xterm-256color cypress run --reporter mochawesome"
   },
   "devDependencies": {
     "cypress": "^14.5.4",
