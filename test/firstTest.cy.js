@@ -1,4 +1,4 @@
-ó/// <reference types="cypress" />
+/// <reference types="cypress" />
 
 beforeEach('Open test application', () => {
     cy.visit('/')
