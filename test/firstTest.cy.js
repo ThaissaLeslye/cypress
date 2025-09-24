@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+ó/// <reference types="cypress" />
 
 beforeEach('Open test application', () => {
     cy.visit('/')
@@ -156,3 +156,15 @@ it('Timeouts', () => {
     cy.get('nb-dialog-container nb-card-header', {timeout: 11000})
         .should('have.text', 'Friendly reminder')
 })
+
+it('Pega data do calendario', () => {
+    cy.contains('Forms').click();
+    cy.contains('Datepicker').click();
+
+    cy.get('[placeholder="Form Picker"]').then( input => {
+    let date = new Date();
+    date.setDate(date.getDate())
+
+    cy.wrap(input).click();
+});
+});
