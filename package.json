@@ -1,7 +1,9 @@
 {
   "name": "cypress-playground",
   "scripts": {
-    "test": "TERM=xterm-256color cypress run --reporter mochawesome"
+    "test": "npx cypress run --reporter mochawesome --reporter-options overwrite=false,html=false,json=true",
+    "merge-reports": "npx mochawesome-merge cypress/reports/*.json > mochareport.json",
+    "generate-report": "npx marge mochareport.json --reportDir mochawesome-report"
   },
   "devDependencies": {
     "cypress": "^14.5.4",

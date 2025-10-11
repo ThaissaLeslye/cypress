@@ -2,51 +2,54 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS' // Deve coincidir com o nome configurado em "Global Tool Configuration"
+        nodejs 'NodeJS' // mesmo nome configurado em "Global Tool Configuration"
     }
 
     environment {
-        CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
         NODE_ENV = "qa"
+        CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
     }
 
     stages {
         stage('Clean Workspace') {
             steps {
-                echo 'Cleaning workspace...'
+                echo 'Limpando workspace...'
                 cleanWs()
             }
         }
 
         stage('Checkout') {
             steps {
+                echo 'Clonando repositório...'
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
+                echo 'Instalando dependências...'
                 sh 'npm ci'
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
-                echo 'Running Cypress tests...'
-                // Executa com relatório e trata erros sem abortar o pipeline
+                echo 'Executando testes Cypress com Mochawesome...'
+                // gera arquivos JSON de relatório
                 sh '''
-                    npx cypress run || echo "Cypress tests failed"
+                    npx cypress run --reporter mochawesome \
+                        --reporter-options overwrite=false,html=false,json=true || true
                 '''
             }
         }
 
-        stage('Generate Reports') {
+        stage('Generate Mochawesome Report') {
             steps {
-                echo 'Generating reports...'
+                echo 'Gerando relatório HTML a partir dos JSONs...'
+                // combina todos os JSONs e gera o HTML final
                 sh '''
                     npx mochawesome-merge cypress/reports/*.json > mochareport.json || true
-                    npx marge mochareport.json --reportDir cypress/reports/html || true
+                    npx marge mochareport.json --reportDir mochawesome-report || true
                 '''
             }
         }
@@ -54,12 +57,12 @@ pipeline {
 
     post {
         always {
-            echo 'Archiving reports...'
-            archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
+            echo 'Arquivando artefatos...'
+            archiveArtifacts artifacts: 'mochawesome-report/**/*', allowEmptyArchive: true
             junit 'cypress/results/*.xml'
         }
         failure {
-            echo 'Build failed. Check Cypress logs and screenshots.'
+            echo 'Build falhou. Verifique logs e screenshots.'
         }
     }
 }
