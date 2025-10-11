@@ -28,7 +28,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Executa o npm install para baixar as dependências do projeto
-                sh 'npm ci'
+                sh 'npm install'
             }
         }
 
