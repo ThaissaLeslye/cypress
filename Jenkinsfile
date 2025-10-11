@@ -2,67 +2,53 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS' // mesmo nome configurado em "Global Tool Configuration"
+        nodejs 'NodeJS' // O mesmo nome configurado na "Global Tool Configuration"
     }
 
     environment {
-        NODE_ENV = "qa"
-        CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
+        CYPRESS_REPORT_DIR = 'cypress/reports'
     }
 
     stages {
-        stage('Clean Workspace') {
+        stage('Limpeza e Preparação') { // 1. UM ESTÁGIO DEDICADO PARA LIMPEZA
             steps {
-                echo 'Limpando workspace...'
-                cleanWs()
+                echo 'Limpando o workspace antes de começar...'
+                
+                // O COMANDO MÁGICO PARA LIMPAR TUDO:
+                cleanWs() 
             }
         }
-
         stage('Checkout') {
             steps {
-                echo 'Clonando repositório...'
+                // Clona o repositório do Git
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Instalando dependências...'
+                // Executa o npm install para baixar as dependências do projeto
                 sh 'npm ci'
             }
         }
 
-        stage('Run Cypress Tests') {
+        stage('Test') {
             steps {
-                echo 'Executando testes Cypress com Mochawesome...'
-                // gera arquivos JSON de relatório
-                sh '''
-                    npx cypress run --reporter mochawesome \
-                        --reporter-options overwrite=false,html=false,json=true || true
-                '''
-            }
-        }
-
-        stage('Generate Mochawesome Report') {
-            steps {
-                echo 'Gerando relatório HTML a partir dos JSONs...'
-                // combina todos os JSONs e gera o HTML final
-                sh '''
-                    npx mochawesome-merge cypress/reports/*.json > mochareport.json || true
-                    npx marge mochareport.json --reportDir mochawesome-report || true
-                '''
+                // Executa os testes definidos no seu package.json
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    sh 'npm test'
+                }
             }
         }
     }
 
     post {
         always {
-            echo 'Arquivando artefatos...'
-            archiveArtifacts artifacts: 'mochawesome-report/**/*', allowEmptyArchive: true
-            junit 'cypress/results/*.xml'
-        }
-        failure {
-            echo 'Build falhou. Verifique logs e screenshots.'
+            // Este bloco é executado sempre, independentemente do resultado do build
+            echo 'Archiving reports...'
+            archiveArtifacts artifacts: "${CYPRESS_REPORT_DIR}/*.html", allowEmptyArchive: true
+            archiveArtifacts artifacts: "${CYPRESS_REPORT_DIR}/*.json", allowEmptyArchive: true
+            archiveArtifacts artifacts: 'test_summary.csv', allowEmptyArchive: true
         }
     }
 }
