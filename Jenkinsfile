@@ -34,6 +34,8 @@ pipeline {
 
         stage('Test') {
             steps {
+                // Remove a pasta de relatórios antes de rodar os testes
+                sh 'rm -rf cypress/reports'
                 // Executa os testes definidos no seu package.json
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     sh 'npm test'
