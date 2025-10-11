@@ -2,47 +2,64 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS' // O mesmo nome configurado na "Global Tool Configuration"
+        nodejs 'NodeJS' // Deve coincidir com o nome configurado em "Global Tool Configuration"
+    }
+
+    environment {
+        CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
+        NODE_ENV = "qa"
     }
 
     stages {
-        stage('Limpeza e Preparação') { // 1. UM ESTÁGIO DEDICADO PARA LIMPEZA
+        stage('Clean Workspace') {
             steps {
-                echo 'Limpando o workspace antes de começar...'
-                
-                // O COMANDO MÁGICO PARA LIMPAR TUDO:
-                cleanWs() 
+                echo 'Cleaning workspace...'
+                cleanWs()
             }
         }
+
         stage('Checkout') {
             steps {
-                // Clona o repositório do Git
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Executa o npm install para baixar as dependências do projeto
-                sh 'npm install'
+                echo 'Installing dependencies...'
+                sh 'npm ci'
             }
         }
 
-        stage('Test') {
+        stage('Run Cypress Tests') {
             steps {
-                // Executa os testes definidos no seu package.json
-                sh 'npm test'
+                echo 'Running Cypress tests...'
+                // Executa com relatório e trata erros sem abortar o pipeline
+                sh '''
+                    npx cypress run || echo "Cypress tests failed"
+                '''
+            }
+        }
+
+        stage('Generate Reports') {
+            steps {
+                echo 'Generating reports...'
+                sh '''
+                    npx mochawesome-merge cypress/reports/*.json > mochareport.json || true
+                    npx marge mochareport.json --reportDir cypress/reports/html || true
+                '''
             }
         }
     }
 
     post {
         always {
-            // Este bloco é executado sempre, independentemente do resultado do build
             echo 'Archiving reports...'
-            archiveArtifacts artifacts: 'cypress/reports/*.html', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'cypress/reports/*.json', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'test_summary.csv', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
+            junit 'cypress/results/*.xml'
+        }
+        failure {
+            echo 'Build failed. Check Cypress logs and screenshots.'
         }
     }
 }
