@@ -3,7 +3,7 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   e2e: {
     experimentalRunAllSpecs: true,
-    baseUrl: 'http://127.0.0.1:5500',
+    baseUrl: 'https://playground.bondaracademy.com/',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
     },
