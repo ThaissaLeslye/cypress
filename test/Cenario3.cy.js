@@ -1,4 +1,4 @@
-describe('Teste de API (Backend)', () => {
+describe('Cenario de Teste', () => {
 
   it('Deve entrar na pagina', () => {
     

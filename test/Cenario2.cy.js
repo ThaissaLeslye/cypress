@@ -1,4 +1,4 @@
-describe('Teste de API (Backend)', () => {
+describe('Cenario de Teste 2', () => {
 
   it('Deve retornar status 200 ao consultar um post existente', () => {
     
