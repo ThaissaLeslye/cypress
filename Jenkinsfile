@@ -2,42 +2,43 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS' // O mesmo nome configurado na "Global Tool Configuration"
+        nodejs 'NodeJS' 
     }
 
     environment {
-        CYPRESS_REPORT_DIR = 'cypress/reports'
+        // AJUSTE: Caminho onde configuramos o mocha-junit-reporter para salvar os XMLs
+        CYPRESS_RESULTS_DIR = 'cypress/results'
     }
 
     stages {
-        stage('Limpeza e Preparação') { // 1. UM ESTÁGIO DEDICADO PARA LIMPEZA
+        stage('Limpeza e Preparação') { 
             steps {
-                echo 'Limpando o workspace antes de começar...'
-                
-                // O COMANDO MÁGICO PARA LIMPAR TUDO:
+                echo 'Limpando o workspace...'
                 cleanWs() 
             }
         }
+        
         stage('Checkout') {
             steps {
-                // Clona o repositório do Git
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Executa o npm install para baixar as dependências do projeto
-                sh 'npm install'
+                sh 'npm ci' // 'npm ci' é mais rápido e seguro para CI do que 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                // Remove a pasta de relatórios antes de rodar os testes
-                sh 'rm -rf cypress/reports'
-                // Executa os testes definidos no seu package.json
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                // Limpa resultados antigos para não misturar builds
+                sh "rm -rf ${CYPRESS_RESULTS_DIR}"
+                
+                // AJUSTE: buildResult 'UNSTABLE' deixa o job Amarelo se testes falharem,
+                // mas garante que o passo 'post' rode para ler os resultados.
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    // Certifique-se que o script "test" no package.json executa "cypress run"
                     sh 'npm test'
                 }
             }
@@ -46,11 +47,14 @@ pipeline {
 
     post {
         always {
-            // Este bloco é executado sempre, independentemente do resultado do build
-            echo 'Archiving reports...'
-            archiveArtifacts artifacts: "${CYPRESS_REPORT_DIR}/*.html", allowEmptyArchive: true
-            archiveArtifacts artifacts: "${CYPRESS_REPORT_DIR}/*.json", allowEmptyArchive: true
-            archiveArtifacts artifacts: 'test_summary.csv', allowEmptyArchive: true
+            echo 'Processando resultados JUnit...'
+            
+            // O PASSO MAIS IMPORTANTE:
+            // Lê os XMLs, gera os gráficos no Jenkins e disponibiliza os dados na API.
+            junit "${CYPRESS_RESULTS_DIR}/*.xml"
+            
+            // Opcional: Se quiser guardar os XMLs brutos para download manual também
+            archiveArtifacts artifacts: "${CYPRESS_RESULTS_DIR}/*.xml", allowEmptyArchive: true
         }
     }
 }
