@@ -75,7 +75,7 @@ describe('Teste de API (Backend)', () => {
       // --- Validações ---
       
       // 1. Verifica se o Status Code é 200 (OK)
-      expect(response.status).to.eq(200)
+      expect(response.status).to.eq(200, `Retornou: ${response.status}`)
 
       // 2. (Extra) Verifica se a resposta não veio vazia
       expect(response.body).to.not.be.null
