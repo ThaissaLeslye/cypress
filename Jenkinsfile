@@ -55,7 +55,7 @@ pipeline {
             // ATENÇÃO: Troque "SEU_IP" pelo IP da sua máquina (ex: 192.168.0.15)
             // Troque "PORTA" pela porta onde seu .NET está rodando (ex: 5000 ou 7153)
             // Se usar "localhost" aqui dentro, o Jenkins pode não achar sua API se estiver em Docker.
-            sh "curl -X POST \"http://host.docker.internal:5029/api/jenkins/sincronizar\""
+            sh "curl -X POST \"http://192.168.0.175:5029/api/jenkins/sincronizar\""
         }
     }
 }
