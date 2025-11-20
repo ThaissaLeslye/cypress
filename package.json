@@ -2,7 +2,7 @@
   "name": "seu-projeto-cypress",
   "version": "1.0.0",
   "scripts": {
-    "test": "cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports,overwrite=false,html=true,json=true"
+    "test": "cypress run"
   },
   "devDependencies": {
     "cypress": "^13.0.0",
