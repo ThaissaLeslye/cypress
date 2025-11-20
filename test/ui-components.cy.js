@@ -1,26 +1,23 @@
-/// <reference types="cypress" />
+describe('Teste de API (Backend)', () => {
 
-beforeEach('Open application', () => {
-    cy.visit('/')
-})
-describe('Test Suite', () => {
-    it.only('input fields', () => {
-        cy.contains('Forms').click()
-        cy.contains('Form Layouts').click()
-
-        const name = 'Artem'
-        cy.get('#inputEmail1').type('hello@test.com', {delay: 200}).clear().type('hello').clear()
-        cy.contains('nb-card', 'Using the Grid').contains('Email').type(`${name}@test.com`)
-
-        cy.get('#inputEmail1').should('not.have.value', '').clear().type('test@bondaracademy.com')
-        .press(Cypress.Keyboard.Keys.TAB)
-
-        // cy.contains('Auth').click()
-        // cy.contains('Login').click()
-
-        // cy.get('#input-email').type('test@bondaracademy.com')
-        // cy.get('#input-password').type('Welcome{enter}')
-
-
+  it('Deve retornar status 200 ao consultar um post existente', () => {
+    
+    // Faz a requisição HTTP do tipo GET
+    cy.request({
+      method: 'GET', 
+      url: 'https://jsonplaceholder.typicode.com/posts/1'
     })
-});
+    .then((response) => {
+      // Loga a resposta no console do navegador (opcional, ajuda a debugar)
+      cy.log(JSON.stringify(response.body))
+
+      // --- Validações ---
+      
+      // 1. Verifica se o Status Code é 200 (OK)
+      expect(response.status).to.eq(200)
+
+      // 2. (Extra) Verifica se a resposta não veio vazia
+      expect(response.body).to.not.be.null
+    })
+  })
+})
