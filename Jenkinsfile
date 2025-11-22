@@ -4,22 +4,28 @@ pipeline {
     tools {
         nodejs 'NodeJS' 
     }
+
     stages {
-        stage ('Checkout') {
+        stage('Limpeza e Preparação') { 
+            steps {
+                echo 'Limpando o workspace...'
+                cleanWs() 
+            }
+        }
+
+        stage('Checkout') {
             steps {
                 checkout scm
             }  
         }
         stage('Instala Dependencias') {
             steps {
-                // Entra na pasta correta e instala
                 sh 'npm ci'
             }
         }
 
         stage('Limpa Relatorio') {
             steps {
-                // Limpa TUDO na pasta de destino antes de começar
                 sh 'rm -Rf cypress/results || true'
             }
         }
