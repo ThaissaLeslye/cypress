@@ -35,6 +35,7 @@ pipeline {
         stage('Gera Relatorio') {
             steps {
                 // Roda o script 'report' configurado no package.json (merge + generate)
+                sh 'ls -R'
                 sh 'npm run report'
             }
         }
