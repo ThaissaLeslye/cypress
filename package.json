@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "axios": "^1.13.2",
+    "cypress-mochawesome-reporter": "^4.0.2",
     "mochawesome": "^7.1.4",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.3.2"
