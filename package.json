@@ -7,10 +7,9 @@
     "open": "npx cypress open",
     "pretest": "rm -rf cypress/reports cypress/results",
     "cypress": "npm run pretest && npx cypress run",
-    "upload-report": "node upload-to-portal.js",
     "merge-report": "mkdir -p cypress/results && npx mochawesome-merge cypress/reports/*.json > cypress/results/full_report.json",
     "generate-report": "npx marge --no-code cypress/results/full_report.json -f index.html -o cypress/results",
-    "report": "npm run merge-report && npm run generate-report && npm run upload-report"
+    "report": "npm run merge-report && npm run generate-report"
   },
   "dependencies": {
     "cypress": "13.4.0",
