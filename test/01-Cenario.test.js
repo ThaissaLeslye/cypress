@@ -8,16 +8,9 @@ describe('Cenario de Teste 1', () => {
       url: 'https://jsonplaceholder.typicode.com/posts/1'
     })
     .then((response) => {
-      // Loga a resposta no console do navegador (opcional, ajuda a debugar)
       cy.log(JSON.stringify(response.body))
-
-      // --- Validações ---
-      
-      // 1. Verifica se o Status Code é 200 (OK)
-      expect(response.status).to.eq(200)
-
-      // 2. (Extra) Verifica se a resposta não veio vazia
-      expect(response.body).to.not.be.null
+      expect(response.status).to.eq(200);
+      expect(response.body).to.not.be.null;
     })
   })
 })

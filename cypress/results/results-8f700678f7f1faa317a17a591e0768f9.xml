@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="6.810" tests="1" failures="0">
-  <testsuite name="Root Suite" timestamp="2025-08-31T16:25:07" tests="1" file="test\ui-components.cy.js" time="6.809" failures="0">
-    <testcase name="input fields" time="6.795" classname="input fields">
-    </testcase>
-  </testsuite>
-</testsuites>

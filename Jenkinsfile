@@ -1,61 +1,61 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS' 
-    }
-
-    environment {
-        CYPRESS_RESULTS_DIR = 'cypress/results'
-    }
-
     stages {
-        stage('Limpeza e Preparação') { 
+        stage('Instala Dependencias') {
             steps {
-                echo 'Limpando o workspace...'
-                cleanWs() 
-            }
-        }
-        
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
+                // Entra na pasta correta e instala
                 sh 'npm ci'
             }
         }
 
-        stage('Test') {
+        stage('Limpa Relatorio') {
             steps {
-                sh "rm -rf ${CYPRESS_RESULTS_DIR}"
-                
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    sh 'npm test'
+                // Limpa TUDO na pasta de destino antes de começar
+                sh 'rm -Rf cypress/results || true'
+            }
+        }
+
+        stage('Roda Testes') {
+            steps {
+                retry(1) {
+                    timeout(time: 15, unit: 'MINUTES') {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            // Roda o teste. Se falhar, o catchError deixa passar para o report
+                            sh 'npm cypress'
+                        }
+                    }
                 }
             }
         }
-    }
 
-    post {
-        always {
-            echo 'Processando resultados JUnit...'
-            
-            // 1. Gera o relatório (OBRIGATÓRIO RODAR ANTES DO CURL)
-            junit "${CYPRESS_RESULTS_DIR}/*.xml"
-            
-            archiveArtifacts artifacts: "${CYPRESS_RESULTS_DIR}/*.xml", allowEmptyArchive: true
+        stage('Gera Relatorio') {
+            steps {
+                // Roda o script 'report' configurado no package.json (merge + generate)
+                sh 'npm run report'
+            }
+        }
 
-            // 2. Chama sua API C# para salvar no banco
-            echo 'Sincronizando com o Banco de Dados...'
-            
-            // ATENÇÃO: Troque "SEU_IP" pelo IP da sua máquina (ex: 192.168.0.15)
-            // Troque "PORTA" pela porta onde seu .NET está rodando (ex: 5000 ou 7153)
-            // Se usar "localhost" aqui dentro, o Jenkins pode não achar sua API se estiver em Docker.
-            sh "curl -v -X POST \"http://192.168.0.175:5029/api/jenkins/sincronizar\""
+        stage('Upload para API') {
+            steps {
+                script {
+                    // Verifica se o arquivo existe antes de tentar enviar
+                    if (fileExists('cypress/results/full_report.json')) {
+                        echo "🚀 Enviando relatório para a API..."
+                        
+                        // O IP deve ser onde seu Node.js está rodando (cuidado com localhost dentro do Docker)
+                        // O '@' antes do caminho do arquivo é OBRIGATÓRIO
+                        sh '''
+                          curl -v -X POST \
+                          -H "Content-Type: application/json" \
+                          -d @cypress/results/full_report.json \
+                          http://192.168.0.175:5029/upload
+                        '''
+                    } else {
+                        echo "⚠️ Arquivo de relatório não encontrado. Pulo o upload."
+                    }
+                }
+            }
         }
     }
 }
