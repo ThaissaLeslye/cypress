@@ -5,6 +5,11 @@ pipeline {
         nodejs 'NodeJS' 
     }
     stages {
+        stage ('Checkout') {
+            steps {
+                checkout scm
+            }  
+        }
         stage('Instala Dependencias') {
             steps {
                 // Entra na pasta correta e instala
