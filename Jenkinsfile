@@ -6,18 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Limpeza e Preparação') { 
-            steps {
-                echo 'Limpando o workspace...'
-                cleanWs() 
-            }
-        }
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }  
-        }
         stage('Instala Dependencias') {
             steps {
                 sh 'npm ci'
@@ -36,7 +25,7 @@ pipeline {
                     timeout(time: 15, unit: 'MINUTES') {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                             // Roda o teste. Se falhar, o catchError deixa passar para o report
-                            sh 'npm cypress'
+                            sh 'npm run cypress'
                         }
                     }
                 }
