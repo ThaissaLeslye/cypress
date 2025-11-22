@@ -7,7 +7,7 @@
     "open": "npx cypress open",
     "cypress": "npx cypress run",
     "upload-report": "node upload-to-portal.js",
-    "merge-report": "npx mochawesome-merge cypress/results/*.json > cypress/results/full_report.json",
+    "merge-report": "mkdir -p cypress/results && npx mochawesome-merge cypress/results/*.json > cypress/results/full_report.json",
     "generate-report": "npx marge --no-code cypress/results/full_report.json -f index.html -o cypress/results",
     "report": "npm run merge-report && npm run generate-report && npm run upload-report"
   },
