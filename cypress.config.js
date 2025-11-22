@@ -33,7 +33,7 @@ module.exports = defineConfig({
       })
     },
     baseUrl: 'https://www.google.com/',
-    specPattern: 'tests/**/*.test.js',
+    specPattern: 'tests/*.test.js',
     experimentalRunAllSpecs: true,
     experimentalModifyObstructiveThirdPartyCode: true
   }
