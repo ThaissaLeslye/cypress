@@ -10,7 +10,7 @@ module.exports = defineConfig({
   viewportWidth: 1600,
   viewportHeight: 900,
   screenshotsFolder: 'cypress/results/screenshot',
-  reporter: 'cypress-mochawesome-reporter',
+  reporter: 'mochawesome',
   reporterOptions: {
     enableCode: false,
     reportDir: 'cypress/reports',
@@ -25,7 +25,6 @@ module.exports = defineConfig({
   },
   e2e: {
     setupNodeEvents(on) {
-      require('cypress-mochawesome-reporter/plugin')(on);
       on('before:browser:launch', (browser, launchOptions) => {
         if (browser.name === 'electron' && browser.isHeadless) {
           launchOptions.preferences.width = 1920;
