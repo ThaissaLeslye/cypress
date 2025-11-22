@@ -9,14 +9,15 @@ module.exports = defineConfig({
   screenshotOnRunFailure: false,
   viewportWidth: 1600,
   viewportHeight: 900,
-  screenshotsFolder: '/var/www/html/relatorios/email-api/',
-  reporter: './node_modules/mochawesome/src/mochawesome.js',
+  screenshotsFolder: 'cypress/results/screenshot',
+  reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     enableCode: false,
-    reportDir: '/var/www/html/relatorios/email-api/separate-reports',
+    reportDir: 'cypress/reports',
     overwrite: false,
     html: false,
-    json: true
+    json: true,
+    charts: true
   },
   env: {
     token: '',
@@ -24,6 +25,7 @@ module.exports = defineConfig({
   },
   e2e: {
     setupNodeEvents(on) {
+      require('cypress-mochawesome-reporter/plugin')(on);
       on('before:browser:launch', (browser, launchOptions) => {
         if (browser.name === 'electron' && browser.isHeadless) {
           launchOptions.preferences.width = 1920;
